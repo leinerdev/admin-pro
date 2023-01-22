@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { RegisterFormRq } from '../interfaces/register-form.interface';
 import { LoginFormRq } from '../interfaces/login-form.interface';
 import { environment } from 'src/environments/environment';
+import { User } from '../models/user.model';
 
 declare const google: any;
 
@@ -15,6 +16,7 @@ declare const google: any;
 export class UserService {
 
   private URL = environment.baseUrl;
+  public user!: User;
 
   constructor(
     private http: HttpClient,
@@ -29,7 +31,6 @@ export class UserService {
       client_id: "493473356823-lttar1muqutsbuev39mmfg69s42oas6h.apps.googleusercontent.com",
       callback: (response: any) => this.handleCredentialResponse(response)
     });
-    google.accounts.id.prompt(); // also display the One Tap dialog
   }
 
   handleCredentialResponse(response: any) {
@@ -60,6 +61,8 @@ export class UserService {
     }).pipe(
       tap((response: any) => {
         localStorage.setItem('token', response.token);
+        const { email, google, name, role, img = '', uid } = response.user;
+        this.user = new User( name, email, '', img, google, role, uid );
       }),
       map(response => true),
       catchError(error => of(false))
