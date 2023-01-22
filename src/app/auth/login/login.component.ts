@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
@@ -22,7 +22,8 @@ export class LoginComponent implements AfterViewInit {
   constructor(
     private router: Router,
     private fb: FormBuilder,
-    private userService: UserService
+    private userService: UserService,
+    private ngZone: NgZone
   ) {
     this.loginForm = this.fb.group({
       email: [localStorage.getItem('email') || '', [Validators.required, Validators.email]],
@@ -53,7 +54,9 @@ export class LoginComponent implements AfterViewInit {
     this.userService.loginGoogle(response.credential).subscribe({
       next: (response) => {
         // console.log({login: response});
-        this.router.navigateByUrl('/');
+        this.ngZone.run(() => {
+          this.router.navigateByUrl('/');
+        })
       },
     })
   }
@@ -65,7 +68,9 @@ export class LoginComponent implements AfterViewInit {
       } else {
         localStorage.removeItem('email');
       }
-      this.router.navigateByUrl('/');
+      this.ngZone.run(() => {
+        this.router.navigateByUrl('/');
+      })
     }, (err) => {
       Swal.fire({
         title: 'Error',
