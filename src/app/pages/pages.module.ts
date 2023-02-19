@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from '../app-routing.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { Grafica1Component } from './grafica1/grafica1.component';
@@ -31,6 +31,7 @@ import { ProfileComponent } from './profile/profile.component';
     SharedModule,
     AppRoutingModule,
     FormsModule,
+    ReactiveFormsModule,
     ComponentsModule,
   ],
   exports: [

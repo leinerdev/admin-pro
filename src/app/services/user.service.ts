@@ -26,6 +26,14 @@ export class UserService {
     this.googleInit()
   }
 
+  get token(): string {
+    return localStorage.getItem('token') || '';
+  }
+  
+  get uid(): string {
+    return this.user._id || '';
+  }
+
   googleInit() {
     google.accounts.id.initialize({
       client_id: "493473356823-lttar1muqutsbuev39mmfg69s42oas6h.apps.googleusercontent.com",
@@ -53,16 +61,15 @@ export class UserService {
   }
 
   validateToken(): Observable<boolean> {
-    const token = localStorage.getItem('token') || '';
     return this.http.get(`${this.URL}/login/renew`, {
       headers: {
-        'x-token': token
+        'x-token': this.token
       }
     }).pipe(
       map((response: any) => {
         localStorage.setItem('token', response.token);
-        const { email, google, name, role, img = '', uid } = response.user;
-        this.user = new User( name, email, '', img, google, role, uid );
+        const { email, google, name, role, img = '', _id } = response.user;
+        this.user = new User( name, email, '', img, _id, google, role );
         return true;
       }),
       catchError(error => of(false))
@@ -75,6 +82,18 @@ export class UserService {
         localStorage.setItem('token', response.token);
       })
     );
+  }
+
+  updateUser(data: { email: string, name: string, role: string }) {
+    data = {
+      ...data,
+      role: this.user.role!
+    }
+    return this.http.put(`${this.URL}/users/${this.uid}`, data, {
+      headers: {
+        'x-token': this.token
+      }
+    });
   }
 
   login(formData: LoginFormRq): Observable<any> {
