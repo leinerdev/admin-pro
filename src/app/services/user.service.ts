@@ -1,12 +1,13 @@
 import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, Observable, of, tap } from 'rxjs';
+import { catchError, delay, map, Observable, of, tap } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { RegisterFormRq } from '../interfaces/register-form.interface';
 import { LoginFormRq } from '../interfaces/login-form.interface';
 import { environment } from 'src/environments/environment';
 import { User } from '../models/user.model';
+import { GetUsers } from '../interfaces/get-users.interface';
 
 declare const google: any;
 
@@ -108,6 +109,33 @@ export class UserService {
     return this.http.post(`${this.URL}/login/google`, { token }).pipe(
       tap((response: any) => {
         localStorage.setItem('token', response.token);
+      })
+    )
+  }
+
+  getUsers(from: number = 0) {
+    const url = `${ environment.baseUrl }/users?from=${ from }`
+    return this.http.get<GetUsers>(url, {
+      headers: {
+        'x-token': this.token
+      }
+    }).pipe(
+      delay(1000),
+      map(response => {
+        const users = response.users.map(user => new User(
+          user.name,
+          user.email,
+          '',
+          user.img,
+          user._id,
+          user.google,
+          user.role
+        ))
+
+        return {
+          total: response.total,
+          users
+        }
       })
     )
   }
