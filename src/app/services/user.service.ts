@@ -30,7 +30,7 @@ export class UserService {
   get token(): string {
     return localStorage.getItem('token') || '';
   }
-  
+
   get uid(): string {
     return this.user._id || '';
   }
@@ -138,5 +138,22 @@ export class UserService {
         }
       })
     )
+  }
+
+  deleteUser(user: User) {
+    const url = `${ environment.baseUrl }/users/${ user._id }`
+    return this.http.delete(url, {
+      headers: {
+        'x-token': this.token
+      }
+    })
+  }
+
+  saveUser(user: User) {
+    return this.http.put(`${this.URL}/users/${user._id}`, user, {
+      headers: {
+        'x-token': this.token
+      }
+    });
   }
 }

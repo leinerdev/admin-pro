@@ -37,7 +37,7 @@
                 <th class="w100">Avatar</th>
                 <th>Correo</th>
                 <th>Nombre</th>
-                <th>Role</th>
+                <th class="w140">Role</th>
                 <th>Auth</th>
                 <th class="text-nowrap w100">Acciones</th>
               </tr>
@@ -45,20 +45,22 @@
             <tbody>
               <tr *ngFor="let user of users">
                 <td class="text-center">
-                  <img src="{{ user.imageUrl }}" class="avatar" alt="avatar de usuario">
+                  <img src="{{ user.imageUrl }}" class="avatar cursor" alt="avatar de usuario" (click)="openModal(user)">
                 </td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.name }}</td>
-                <td>{{ user.role }}</td>
+                <td>
+                  <select class="form-control" [(ngModel)]="user.role" (change)="changeRole(user)">
+                    <option value="ADMIN_ROLE">Admin</option>
+                    <option value="USER_ROLE">User</option>
+                  </select>
+                </td>
                 <td>
                   <span *ngIf="user.google" class="label label-danger">Google</span>
                   <span *ngIf="!user.google" class="label label-info">Email</span>
                 </td>
                 <td class="text-nowrap text-center">
-                  <a href="#" data-toggle="tooltip" data-original-title="Editar">
-                    <i class="fa fa-pencil text-inverse m-r-10"></i>
-                  </a>
-                  <a href="#" data-toggle="tooltip" data-original-title="Borrar">
+                  <a (click)="deleteUser(user)" class="cursor" data-toggle="tooltip" data-original-title="Borrar">
                     <i class="fa fa-close text-danger"></i>
                   </a>
                 </td>
