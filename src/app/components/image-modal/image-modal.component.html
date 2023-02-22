@@ -9,10 +9,15 @@
         </div>
           <div class="modal-body">
             <h3>Seleccione una imagen</h3>
+            <div class="text-center">
+              <img *ngIf="!imgTemp" [src]="modalService.img" class="img-avatar">
+              <img *ngIf="imgTemp" [src]="imgTemp" class="img-avatar">
+            </div>
+            <input type="file" (change)="changeImage($event)">
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-primary">Actualizar foto</button>
+            <button type="button" class="btn btn-default" (click)="closeModal()" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary" (click)="onUploadImage()">Actualizar foto</button>
           </div>
       </div>
     </div>

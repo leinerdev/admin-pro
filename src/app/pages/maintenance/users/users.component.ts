@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { delay, Subscription } from 'rxjs';
 import { GetUsers } from 'src/app/interfaces/get-users.interface';
 import { User } from 'src/app/models/user.model';
 import { ImageModalService } from 'src/app/services/image-modal.service';
@@ -13,13 +14,14 @@ import Swal from 'sweetalert2';
   styles: [
   ]
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent implements OnInit, OnDestroy {
 
   public users: User[] = [];
   public totalUsers: number = 0;
   public from: number = 0;
   public isLoading: boolean = true;
   public usersTemp: User[] = []
+  public imgSubs!: Subscription;
 
   constructor(
     protected userService: UserService,
@@ -27,8 +29,16 @@ export class UsersComponent implements OnInit {
     protected modalService: ImageModalService
   ) { }
 
+
+  ngOnDestroy(): void {
+    this.imgSubs.unsubscribe();
+  }
+
   ngOnInit(): void {
     this.getUsers();
+    this.imgSubs = this.modalService.newImagenNotification.pipe(
+      delay(1000)
+    ).subscribe(() => this.getUsers())
   }
 
   getUsers() {
@@ -113,7 +123,7 @@ export class UsersComponent implements OnInit {
   }
 
   openModal(user: User) {
-    this.modalService.openModal()
+    this.modalService.openModal('users', user._id!, user.img!)
   }
 
 }
