@@ -6,15 +6,15 @@
         <h6 class="card-subtitle">
           Actualizar información
         </h6>
-        <form class="form-horizontal p-t-20">
+        <form [formGroup]="doctorForm" class="form-horizontal p-t-20" (submit)="saveDoctor()">
 
-          <div class="form-group row">
+          <div *ngIf="selectedDoctor" class="form-group row">
             <label for="exampleInputuname3" class="col-sm-3 control-label"
               >Foto</label
             >
             <div class="col-sm-9">
               <div class="input-group">
-                <img [src]="'http://localhost:3000/api/upload/doctors/hertwhrwthrwt.jpg'" alt="" class="w100">
+                <img [src]="selectedDoctor.img! | image:'doctors'" alt="" class="w100">
               </div>
             </div>
           </div>
@@ -27,6 +27,7 @@
               <div class="input-group">
                 <div class="input-group-addon"><i class="ti-user"></i></div>
                 <input
+                  formControlName="name"
                   type="text"
                   class="form-control"
                   id="exampleInputuname3"
@@ -42,10 +43,9 @@
             >
             <div class="col-sm-9">
               <div class="input-group">
-                <select class="form-control" name="" id="">
-                  <option>Hospital 1</option>
-                  <option>Hospital 1</option>
-                  <option>Hospital 1</option>
+                <select formControlName="hospital" class="form-control" name="" id="">
+                  <option value="">Seleccione hospital</option>
+                  <option *ngFor="let hospital of hospitals" [value]="hospital._id">{{ hospital.name }}</option>
                 </select>
               </div>
             </div>
@@ -66,14 +66,14 @@
       </div>
     </div>
   </div>
-  <div class="col-md-6">
+  <div *ngIf="selectedHospital" class="col-md-6 animated fadeIn fast">
     <div class="card">
       <div class="card-body">
         <h4 class="card-title">Hospital</h4>
         <h6 class="card-subtitle">
-          Hospital asignado
+          {{ selectedHospital.name }}
         </h6>
-        <img [src]="'http://localhost:3000/api/upload/doctors/hertwhrwthrwt.jpg'" alt="" class="w100">
+        <img [src]="selectedHospital.img! | image:'hospitals'" alt="" class="img-thumbnail">
       </div>
     </div>
   </div>
