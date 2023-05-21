@@ -17,6 +17,7 @@ import { UsersComponent } from './maintenance/users/users.component';
 import { HospitalsComponent } from './maintenance/hospitals/hospitals.component';
 import { DoctorsComponent } from './maintenance/doctors/doctors.component';
 import { DoctorComponent } from './maintenance/doctors/doctor.component';
+import { SearchesComponent } from './searches/searches.component';
 
 const routes: Routes = [
   {
@@ -29,6 +30,7 @@ const routes: Routes = [
       { path: 'progress', component: ProgressComponent,data : { title: 'Barra de progreso' } },
       { path: 'grafica1', component: Grafica1Component,data : { title: 'Gráficas' } },
       { path: 'account-settings', component: AccountSettingsComponent,data : { title: 'Ajustes de cuenta' } },
+      { path: 'search/:term', component: SearchesComponent,data : { title: 'Búsquedas' } },
       { path: 'promises', component: PromisesComponent,data : { title: 'Promesas' } },
       { path: 'rxjs', component: RxjsComponent,data : { title: 'RxJS' } },
 
