@@ -43,7 +43,7 @@ export class ProfileComponent implements OnInit {
         Swal.fire('Guardado', 'Cambios fueron guardados', 'success');
       },
       error: (err) => {
-        Swal.fire('Error', err.error.msg, 'error');
+        Swal.fire('Error', err.error.message, 'error');
       }
     })
   }

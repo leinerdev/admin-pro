@@ -17,6 +17,15 @@ export class SearchService {
     return localStorage.getItem('token') || '';
   }
 
+  globalSearch(term: string) {
+    const url = `${ environment.baseUrl }/all/${ term }`
+    return this.http.get<any[]>(url, {
+      headers: {
+        'x-token': this.token
+      }
+    })
+  }
+
   search(type: 'users' | 'doctors' | 'hospitals', term: string = '') {
     const url = `${ environment.baseUrl }/all/collection/${ type }/${ term }`
     return this.http.get<any[]>(url, {

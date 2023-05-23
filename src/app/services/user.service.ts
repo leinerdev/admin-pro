@@ -31,6 +31,10 @@ export class UserService {
     return localStorage.getItem('token') || '';
   }
 
+  get role(): 'ADMIN_ROLE' | 'USER_ROLE' {
+    return this.user.role!;
+  }
+
   get uid(): string {
     return this.user._id || '';
   }
@@ -54,6 +58,7 @@ export class UserService {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('menu');
     google.accounts.id.revoke('leinerbarrios99.ljbm@gmail.com', () => {
       this.ngZone.run(() => {
         this.router.navigateByUrl('/login');
@@ -68,7 +73,7 @@ export class UserService {
       }
     }).pipe(
       map((response: any) => {
-        localStorage.setItem('token', response.token);
+        this.saveLocalStorage(response.token, response.menu);
         const { email, google, name, role, img = '', _id } = response.user;
         this.user = new User( name, email, '', img, _id, google, role );
         return true;
@@ -80,7 +85,7 @@ export class UserService {
   createUser(formData: RegisterFormRq): Observable<any> {
     return this.http.post(`${this.URL}/users`, formData).pipe(
       tap((response: any) => {
-        localStorage.setItem('token', response.token);
+        this.saveLocalStorage(response.token, response.menu);
       })
     );
   }
@@ -100,7 +105,7 @@ export class UserService {
   login(formData: LoginFormRq): Observable<any> {
     return this.http.post(`${this.URL}/login`, formData).pipe(
       tap((response: any) => {
-        localStorage.setItem('token', response.token);
+        this.saveLocalStorage(response.token, response.menu);
       })
     );
   }
@@ -109,6 +114,7 @@ export class UserService {
     return this.http.post(`${this.URL}/login/google`, { token }).pipe(
       tap((response: any) => {
         localStorage.setItem('token', response.token);
+        localStorage.setItem('menu', response.menu);
       })
     )
   }
@@ -155,5 +161,10 @@ export class UserService {
         'x-token': this.token
       }
     });
+  }
+
+  saveLocalStorage(token: string, menu: any) {
+    localStorage.setItem('token', token);
+    localStorage.setItem('menu', JSON.stringify(menu));
   }
 }
